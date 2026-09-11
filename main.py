@@ -71,8 +71,23 @@ def window_proc(hwnd, msg, wparam, lparam):
 
     return ctypes.windll.user32.DefWindowProcW(hwnd, msg, wparam, lparam)
 
-
 def start_monitoring():
+    user32 = ctypes.windll.user32
+    user32.CreateWindowExW.argtypes = [
+        ctypes.wintypes.DWORD,  # dwExStyle
+        ctypes.wintypes.LPCWSTR, # lpClassName
+        ctypes.wintypes.LPCWSTR, #lpWindows Name
+        ctypes.wintypes.DWORD, # dwStyle
+        ctypes.c_int, # x
+        ctypes.c_int, # y
+        ctypes.c_int, # nWidth
+        ctypes.c_int, # nHeight
+        ctypes.wintypes.HWND, #hWndParent
+        ctypes.wintypes.HMENU, #hInstance
+        ctypes.wintypes.LPVOID # lpParam
+    ]
+    user32.CreateWindowExW.restype = ctypes.wintypes.HWND
+    
     WNDPROC = ctypes.WINFUNCTYPE(ctypes.c_int64, ctypes.wintypes.HWND, ctypes.wintypes.UINT, ctypes.wintypes.WPARAM,
                                  ctypes.wintypes.LPARAM)
 
@@ -94,7 +109,7 @@ def start_monitoring():
     wc = WNDCLASS()
     wc.lpfnWndProc = _wndproc_callback_keep_alive
     wc.lpszClassName = "WallpaperGuardClass"
-    wc.hInstance = ctypes.windll.kernel32.GetModuleHandleW(None)
+    wc.hInstance = ctypes.windll.kernel32.GetModuleHandleW(0)
 
     ctypes.windll.user32.RegisterClassW(ctypes.byref(wc))
 
