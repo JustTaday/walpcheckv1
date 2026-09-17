@@ -26,7 +26,7 @@ ctypes.windll.user32.DefWindowProcW.restype = ctypes.c_int64
 is_resetting = False
 
 
-def show_test_error():
+def show_test_error():  # рандомная ошибка
     n = random.randint(1, 4)
 
     if n == 1:
@@ -42,14 +42,14 @@ def show_test_error():
         g
     )
 
-    ctypes.windll.user32.MessageBoxW(None, message, title, MB_OK | MB_ICONERROR | MB_TOPMOST)
+    ctypes.windll.user32.MessageBoxW(None, message, title, MB_OK | MB_ICONERROR | MB_TOPMOST)  # вызов ошибки
 
 
-def walpcheck_back():
+def walpcheck_back():  # возврат обоев
     ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, DEFAULT_WALLPAPER, 0)
 
 
-def window_proc(hwnd, msg, wparam, lparam):
+def window_proc(hwnd, msg, wparam, lparam):  # крутая вещь (перехват)
     global is_resetting
 
     if msg == WM_SETTINGCHANGE:
@@ -71,23 +71,25 @@ def window_proc(hwnd, msg, wparam, lparam):
 
     return ctypes.windll.user32.DefWindowProcW(hwnd, msg, wparam, lparam)
 
-def start_monitoring():
+
+def start_monitoring():  # запуск + перехват
     user32 = ctypes.windll.user32
     user32.CreateWindowExW.argtypes = [
-        ctypes.wintypes.DWORD,  # dwExStyle
-        ctypes.wintypes.LPCWSTR, # lpClassName
-        ctypes.wintypes.LPCWSTR, #lpWindows Name
-        ctypes.wintypes.DWORD, # dwStyle
-        ctypes.c_int, # x
-        ctypes.c_int, # y
-        ctypes.c_int, # nWidth
-        ctypes.c_int, # nHeight
-        ctypes.wintypes.HWND, #hWndParent
-        ctypes.wintypes.HMENU, #hInstance
-        ctypes.wintypes.LPVOID # lpParam
+        ctypes.wintypes.DWORD,  # 1 dwExStyle
+        ctypes.wintypes.LPCWSTR,  # 2 lpClassName
+        ctypes.wintypes.LPCWSTR,  # 3 lpWindows Name
+        ctypes.wintypes.DWORD,  # 4 dwStyle
+        ctypes.c_int,  # 5 x
+        ctypes.c_int,  # 6 y
+        ctypes.c_int,  # 7 nWidth
+        ctypes.c_int,  # 8 nHeight
+        ctypes.wintypes.HWND,  # 9 hWndParent
+        ctypes.wintypes.HMENU,  # 10 HMENU
+        ctypes.wintypes.HINSTANCE,  # hInstance
+        ctypes.wintypes.LPVOID  # 11 lpParam
     ]
     user32.CreateWindowExW.restype = ctypes.wintypes.HWND
-    
+
     WNDPROC = ctypes.WINFUNCTYPE(ctypes.c_int64, ctypes.wintypes.HWND, ctypes.wintypes.UINT, ctypes.wintypes.WPARAM,
                                  ctypes.wintypes.LPARAM)
 
@@ -114,7 +116,15 @@ def start_monitoring():
     ctypes.windll.user32.RegisterClassW(ctypes.byref(wc))
 
     ctypes.windll.user32.CreateWindowExW(
-        0, wc.lpszClassName, "Guard", 0, 0, 0, 0, 0, 0, 0, wc.hInstance, 0
+        0,
+        wc.lpszClassName,
+        "Guard",
+        0,
+        0, 0, 0, 0,
+        None,
+        None,
+        wc.hInstance,
+        None
     )
 
     print("запуск")
@@ -129,7 +139,3 @@ def start_monitoring():
 
 if __name__ == "__main__":
     start_monitoring()
-
-# если ты нашел эту прогу, то ты крут (наверное)
-# если попробуешь удалить прогу, то я просто сделаю новые уровни защиты, так что прими это :D
-#                                                                                           -Талипов Адай
