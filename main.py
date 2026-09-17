@@ -1,10 +1,6 @@
 import ctypes
-import random
 import ctypes.wintypes
 import threading
-
-# рандом переменная
-n = 0
 
 # константы для перехвата обоев
 WM_SETTINGCHANGE = 0x001A
@@ -27,19 +23,10 @@ is_resetting = False
 
 
 def show_test_error():  # рандомная ошибка
-    n = random.randint(1, 4)
-
-    if n == 1:
-        g = str(":D")
-    if n == 2:
-        g = str("Неа!")
-    if n == 3:
-        g = str("Попробуй опять :D")
-    if n == 4:
-        g = str("Хорошая попытка")
     title = "WalpCheck"
     message = (
-        g
+        "Ошибка в explorer.exe"
+        "Код ошибки: 0x0000000A (Запрос отменён)"
     )
 
     ctypes.windll.user32.MessageBoxW(None, message, title, MB_OK | MB_ICONERROR | MB_TOPMOST)  # вызов ошибки
@@ -138,4 +125,6 @@ def start_monitoring():  # запуск + перехват
 
 
 if __name__ == "__main__":
+    walpcheck_back()
+
     start_monitoring()
